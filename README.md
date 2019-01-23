@@ -56,7 +56,7 @@ existing iPhone via Shortcuts (neé Workflow), and that suits my
 purposes fine.
 
 As this is, it works for me on macOS, RHEL/CentOS, and NetBSD. Your
-mileage will almost definitely very. If you have any problems, let
+mileage will almost definitely vary. If you have any problems, let
 me know, with the caveat that I might not care.
 
 ## On Naming
