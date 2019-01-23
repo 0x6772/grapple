@@ -29,8 +29,10 @@ But I don't want to use any of those, because, where it's even
 feasible to audit their code, I don't have that kind of patience.
 Also, I definitely don't want my passwords in anybody's cloud.
 
-I keep my passwords in a PGP-encrypted file (at any given time: I'm
-a bit out of date, but yes, I do read the GnuPG code I run), which
+I keep my passwords in a PGP-encrypted file (at any given time
+mostly by code I've read and thought about, although I'm probably
+still trusting a rev on which I'm
+a bit out of date; but yes, I do read the GnuPG code I run), which
 is sync'ed to computers that I own, but whose primary store is a
 differently-encrypted (commercial, the one I use
 currently - 2019-01 - touts "AES" and their code is not public, but
