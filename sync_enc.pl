@@ -13,7 +13,7 @@ use Data::Dumper;
 my $file_check_regex = '^passwd';
 my $encrypted_suffix_regex = '(gpg|pgp|asc)$';
 my $encrypted_suffix_actual = 'gpg';
-my $recipient = 'gr@eclipsed.net';
+my $recipient = 'you@your.domain';
 
 my $cwd = getcwd();
 
