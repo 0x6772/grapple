@@ -1,0 +1,207 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Data::Dumper;
+use Getopt::Long;
+use Switch;
+use Clipboard;
+
+#XXX
+my $gpg = `which gpg`;
+chomp $gpg;
+
+# Defaults
+my $separator = '\|';
+# -s, --separator
+my $line_separator = '\n';
+# --lineseparator
+my $action = '';
+# -a, --action 
+#   query
+#   create
+#   update
+#   change
+#   synchronize
+my $query_regex = '';
+# -q, --query_regex
+my $repository = '';
+# -r, --repository XXX clear me after conf reading
+my $local_repository = '~/passwd.gpg';
+# -l, --localrepository
+my $config_file = '~/grapple.conf';
+# -c --config
+my $usage = 0;
+# -h, -?, --help, --usage
+my $verbose = 0;
+# -v, --verbose (increments)
+my $pipeline = 0;
+# -p, --pipeline: expect to read passphrase from stdin, and send
+# passphrase to stdout; only for query?
+# XXX should forcibly unset verbose, probably
+
+# XXX other stuff later:
+# o gpg path
+# x passphrase on stdin (--passphrase-fd on gpg, maybe also 
+#   need to dick with --batch and --pinentry-mode loopback)
+#   (just --batch, --pinentry-mode doesn't matter based on iOS Shortcuts
+#   testing)
+# o expr all the ~s, after parsing config file
+#   ... or like, generally f file systems?
+
+# XXX read config file first, opts override
+# bug then what happens if we get a config file on the CLI, dumbass?
+
+Getopt::Long::Configure ("bundling");
+GetOptions(
+  'help|usage|h|?'
+    => \$usage,
+  'config|c=s'
+    => \$config_file,
+  'repository|r=s'
+    => \$repository,
+  'local_repository|l=s'
+    => \$local_repository,
+  'action|a:s'
+    => \$action,
+  'query_regex|q=s'
+    => \$query_regex,
+  'verbose|v+'
+    => \$verbose,
+  'separator|s=s'
+    => \$separator,
+  'line_separator=s'
+    => \$line_separator,
+  'pipeline|p'
+    => \$pipeline,
+) or $usage = 1;
+
+# XXX validate $action to also feed $usage
+
+if ($action eq '')
+{
+  $action = 'query';
+  if ($query_regex eq '')
+  {
+    $query_regex = join(' ', @ARGV);
+  }
+}
+else
+{
+  $usage = 1;
+}
+
+if ($usage)
+{
+  # XXX
+}
+
+
+my $changes_valid = 0;
+my $active_repo = '';
+
+# XXX expr path?
+$local_repository = qx(expr $local_repository);
+chomp $local_repository; # XXX lame
+
+if (-r $repository)
+{
+  # XXX check writeability
+  # for any change stuff, set $changes_valid
+  $active_repo = $repository;
+  # XXX handle first time use ($action must be create then)
+}
+elsif (-r $local_repository)
+{
+  $active_repo = $local_repository;
+}
+else
+{
+  die "Yikes!"; #XXX
+}
+
+### Read repo
+print STDERR ("Reading from repository $active_repo\n")
+  if ($verbose);
+
+if ($pipeline)
+{
+  my $passphrase = <STDIN>;
+  chomp $passphrase;
+
+  $gpg = "echo $passphrase | $gpg --passphrase-fd 0 --batch";
+  # XXX gross, it's in ps(1) output this way
+  # look at
+  # https://stackoverflow.com/questions/40172951/how-to-pipe-the-content-of-a-variable-as-stdin-in-a-qx-statement-in-perl
+  # more carefully
+}
+
+my $repo_clear = qx($gpg -q -d $active_repo);
+
+# XXX line separator other than \n...? Or forget that? Because...
+# MSFT? Eh?
+
+switch ($action)
+{
+  case "query"
+  { ### Query
+    # (Everything else requires parsing and interactivity, but for 
+    # query we just match through and go on our way.)
+		# XXX No, dickhead, if you have more than one match, you need
+		# interactivity (and a live terminal). Well, rats. Does termcap
+		# still suck like it did in 1999? I bet it does.
+
+    print STDERR ("Searching for regex /$query_regex/\n")
+      if ($verbose);
+    
+    foreach my $line (split(/$line_separator/, $repo_clear))
+    {
+      my ($username, $site, $password, $pin, $autochange,
+        $changeurl, $pwreqs, $recovery_answers)
+          = split(/$separator/, $line);
+
+      if ($site =~ /$query_regex/)
+      {
+        if ($pipeline)
+        {
+          # I guess for multis here you're just boned?
+          # must be a better way XXX
+          print $password;
+        }
+        else
+        {
+          # XXX handle multiple hits
+          print "$username\@$site password on clipboard.\n";
+          Clipboard->copy($password);
+          # XXX clear clipboard after configurable number of secs
+        }
+      }
+    }
+  }
+  else
+  {
+    die "Yikes, no action!"; # XXX
+  }
+}
+
+exit 0;
+### Parse (for create, update, change)
+my %pws;
+
+while (<STDIN>)
+{
+  chomp;
+  my ($username, $site, $password, $autochange, $changeurl, $pwreqs)
+    = split(/$separator/);
+
+  $pws{"$username\@$site"}{username} = $username;
+  $pws{"$username\@$site"}{site} = $site;
+  $pws{"$username\@$site"}{password} = $password;
+  $pws{"$username\@$site"}{autochange} = $autochange;
+  $pws{"$username\@$site"}{changeurl} = $changeurl;
+  $pws{"$username\@$site"}{pwreqs} = $pwreqs;
+}
+
+#print Dumper(%pws);
+
+# XXX write changes (pull from sync_enc.pl, ish)
+# XXX newpw from (trivial) gen_random_pw.sh
