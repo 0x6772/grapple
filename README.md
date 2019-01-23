@@ -32,12 +32,12 @@ Also, I definitely don't want my passwords in anybody's cloud.
 I keep my passwords in a PGP-encrypted file (at any given time: I'm
 a bit out of date, but yes, I do read the GnuPG code I run), which
 is sync'ed to computers that I own, but whose primary store is a
-differently-encrypted (commercial, the one I use currently - 2019-01
-- touts "AES" and their code is not public, but that's good enough
-for my purposes, like the trivially pickable lock on my front door
-is good enough) USB mass storage device that's hanging off my
-physical key chain any time it's not plugged into the computer in
-front of me.
+differently-encrypted (commercial, the one I use
+currently - 2019-01 - touts "AES" and their code is not public, but
+that's good enough for my purposes, like the trivially pickable
+lock on my front door is good enough) USB mass storage device that's
+hanging off my physical key chain any time it's not plugged into
+the computer in front of me.
 
 If you're my kind of paranoid, I guess this might be for you?
 
