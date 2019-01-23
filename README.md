@@ -51,7 +51,7 @@ a thing you'd want to use, maybe take a glance at design.md for my
 idea of what I want this to be.
 
 I'm not morally opposed to things like iOS/Android apps, but that's
-really not area of expertise. I already use this existing thing on my
+really not my area of expertise. I already use this existing thing on my
 existing iPhone via Shortcuts (neé Workflow), and that suits my
 purposes fine.
 
