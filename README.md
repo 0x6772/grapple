@@ -39,7 +39,7 @@ currently - 2019-01 - touts "AES" and their code is not public, but
 that's good enough for my purposes, like the trivially pickable
 lock on my front door is good enough) USB mass storage device that's
 hanging off my physical key chain any time it's not plugged into
-the computer in front of me.
+the computer in front of me. This is the code I use to manage that.
 
 If you're my kind of paranoid, I guess this might be for you?
 
