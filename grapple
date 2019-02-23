@@ -152,7 +152,10 @@ switch ($action)
 
     print STDERR ("Searching for regex /$query_regex/\n")
       if ($verbose);
+      # XXX need to be able to search for uname in addition to site
     
+    my %options;
+
     foreach my $line (split(/$line_separator/, $repo_clear))
     {
       my ($username, $site, $password, $pin, $autochange,
@@ -165,17 +168,55 @@ switch ($action)
         {
           # I guess for multis here you're just boned?
           # must be a better way XXX
-          print $password;
+          print "$username\@$site: $password\n";
         }
         else
         {
-          # XXX handle multiple hits
-          print "$username\@$site password on clipboard.\n";
-          Clipboard->copy($password);
-          # XXX clear clipboard after configurable number of secs
+          # yes, even if there's only one; see below
+          $options{"$username\@$site"} = $password;
         }
       }
     }
+
+    my $count = scalar keys %options;
+    if ($count < 1)
+    {
+      print "No matching ID found.\n";
+      exit 1;
+    }
+    elsif ($count == 1)
+    {
+      my $key = (keys %options)[0];
+      print "$key password on clipboard.\n";
+      Clipboard->copy($options{$key});
+      # XXX clear clipboard after configurable number of secs
+    }
+    else
+    {
+      my $i = 0;
+      my @selections;
+      my $key;
+      foreach $key (sort keys %options)
+      {
+        print "$i: $key\n";
+        $selections[$i++] = $key;
+      }
+      my $choice;
+      CHOOSE:
+      while (not defined $choice)
+      {
+        print "--> ";
+        $choice = <STDIN>;
+      }
+      if ($choice < 0 || $choice > ($count - 1))
+      {
+        undef $choice;
+        goto CHOOSE;
+      }
+      print "$selections[$choice] password on clipboard.\n";
+      Clipboard->copy($options{$selections[$choice]});
+    }
+
   }
   else
   {
