@@ -1,3 +1,3 @@
-user@foo.example.net
-user2@baz.example.com
-localhost
+user:foo.example.net
+user2:baz.example.com:2222
+:localhost:
