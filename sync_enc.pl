@@ -9,7 +9,6 @@ use IO::Socket;
 use Data::Dumper;
 
 # XXX config or cli this
-# XXX username, dumbass! (for now in sync_hosts)
 my $file_check_regex = '^passwd';
 my $encrypted_suffix_regex = '(gpg|pgp|asc)$';
 my $encrypted_suffix_actual = 'gpg';
@@ -112,12 +111,16 @@ open(my $sync_hosts, $sync_hosts_file);
 
 while (<$sync_hosts>)
 {
-  my $host = $_;
-  chomp ($host);
+  chomp ($_);
+  my ($user, $host, $port) = split /:/, $_;
 
   foreach my $enc_file (@enc_files)
   {
-	  my $command = "$scp $enc_file $host:";
+	  my $command = "$scp" 
+      . (length($port) > 1 ? " -P $port" : " ")
+      . " $enc_file"
+      . (length($user) > 1 ? " $user@" : " ")
+      . "$host:";
 	  print "--> $command\n";
 	  system $command;
   }
