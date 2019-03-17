@@ -27,13 +27,111 @@ use File::Spec::Functions;
 use File::Basename;
 use File::Copy qw(copy);
 use IO::Socket;
+use Switch;
 use Data::Dumper;
 
 # XXX config or cli this
 my $file_check_regex = '^passwd';
 my $encrypted_suffix_regex = '(gpg|pgp|asc)$';
 my $encrypted_suffix_actual = 'gpg';
-my $recipient = 'you@your.domain';
+my $recipient;
+# force set it here if you like XXX move to conf file:
+#my $recipient = 'you@your.domain';
+
+if (not defined $recipient)
+{
+  my $lines_string = qx{gpg --list-secret-keys};
+  
+  my @lines = split('\n', $lines_string);
+  
+  my %options;
+  my $keyid_next = 0;
+  my $keyid = '';
+  foreach my $line (@lines)
+  {
+    chomp $line;
+    my @items = split ' ', $line;
+  
+    if ($keyid_next)
+    {
+      if ($#items == 0 && length($items[0]) == 40)
+      {
+        $keyid = $items[0];
+        $keyid_next = 0;
+      }
+      else
+      {
+        die "Can't find key ID in @items";
+      }
+    }
+    else
+    {
+      switch ($items[0])
+      {
+        case "sec"
+        {
+          $keyid = '';
+          $keyid_next = 1;
+        }
+        case "uid"
+        {
+          if ($items[1] eq '[ultimate]'
+            && $items[$#items] =~ m/^<.+\@.+>$/)
+          {
+            my $uid = join(' ', @items[2 .. $#items]);
+            push @{$options{$keyid}}, $uid;
+          }
+        }
+      }
+    }
+  }
+  
+  # XXX make this a sub, but over in grapple after integrating this
+  my $count = scalar keys %options;
+  
+  if ($count < 1)
+  { 
+    print "No matching ID found.\n";
+    exit 1;
+  }
+  elsif ($count == 1)
+  {
+    $recipient = (keys %options)[0];
+  }
+  else
+  {
+    my $i = 0;
+    my @selections;
+    my $key;
+    foreach $key (sort keys %options)
+  	{
+  		print "$i: $key\n    " .
+        join("\n    ", @{$options{$keyid}}) .
+        "\n";
+  		$selections[$i++] = $key;
+  	}
+    my $choice;
+  	CHOOSE:
+  	while (not defined $choice)
+  	{
+  		print "--> ";
+  		$choice = <STDIN>;
+  	}
+  	if ($choice < 0 || $choice > ($count - 1))
+  	{
+  		undef $choice;
+  		goto CHOOSE;
+  	}
+    $recipient = $selections[$choice];
+  }
+  print "Encrypting to key ID:\n  $recipient\n  ($options{$keyid}[0])\n";
+}
+else
+{
+  print "Encrypting to $recipient\n";
+}
+# XXX handle if $recipient is defined as email address, rather than
+# key id
 
 my $cwd = getcwd();
 
