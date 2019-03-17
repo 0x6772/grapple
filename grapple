@@ -184,7 +184,7 @@ switch ($action)
 
       print STDERR "Checking against site [$site] (user [$username])\n"
         if ($verbose > 1);
-      if ($site =~ /$query_regex/)
+      if ($site =~ /$query_regex/i) # XXX temp i here: do it as CLI flag
       {
         if ($pipeline)
         {
