@@ -24,6 +24,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# XXX put this in a config file, you monster
 vols="list your vols here"
 vol_base="/Volumes"
 
