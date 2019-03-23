@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# default format for passwd:
+# username|site|password|pin|autochange|changeurl|passreqs|recov answers
+
 use strict;
 use Data::Dumper;
 use Getopt::Long;
@@ -178,6 +181,11 @@ switch ($action)
 
     foreach my $line (split(/$line_separator/, $repo_clear))
     {
+      # default format:
+      # username|site|password|pin|autochange (Boolean)|change url| \
+      # password requirements|password recovery answers
+      #
+      # XXX also store 2fa backups? Probably in a separate file
       my ($username, $site, $password, $pin, $autochange,
         $changeurl, $pwreqs, $recovery_answers)
           = split(/$separator/, $line);
