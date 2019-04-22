@@ -31,7 +31,8 @@ use Switch;
 use Data::Dumper;
 
 # XXX config or cli this
-my $file_check_regex = '^passwd';
+#my $file_check_regex = '^passwd';
+my $file_check_regex = '^passwd|^retired.passwd';
 my $encrypted_suffix_regex = '(gpg|pgp|asc)$';
 my $encrypted_suffix_actual = 'gpg';
 my $recipient;
