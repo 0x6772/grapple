@@ -76,6 +76,7 @@
       - detached(/able) token should be able to accept updates if
       requested, otherwise overwrites
         - XXX think about that some more
+    * option to store encrypted file in, eg, git?
   * update (our repo)
   * change (on the target "site")
     * special case: change all
@@ -85,3 +86,13 @@
       - interact with websites via... eh? What a shambles.
       - probably interact with local system paste buffer as a cheat,
 			needs context-smart prompts. Woof.
+* future:
+  * handle "old" or "dead" or "retired" passwords
+    - retired.passwd.gpg for now
+    - sync_enc.pl change was minimal, done
+  * display options based on username instead of site
+  * display just username@site ala:
+    gpg -qd passwd.gpg | awk -F\| '$1 ~ /bess/ { print $1 "@" $2 }'
+  * display password (see inline stuff above, but handle multiples…
+    somehow)
+  * f'ing config files! XXX
