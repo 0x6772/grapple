@@ -96,3 +96,4 @@
   * display password (see inline stuff above, but handle multiples…
     somehow)
   * f'ing config files! XXX
+  * validate repos (missing cols / split rows)
