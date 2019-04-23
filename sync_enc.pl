@@ -234,16 +234,14 @@ while (<$sync_hosts>)
   chomp ($_);
   my ($user, $host, $port) = split /:/, $_;
 
+  my $command = "$scp" . (length($port) > 1 ? " -P $port" : " ");
   foreach my $enc_file (@enc_files)
   {
-	  my $command = "$scp" 
-      . (length($port) > 1 ? " -P $port" : " ")
-      . " $enc_file"
-      . (length($user) > 1 ? " $user@" : " ")
-      . "$host:";
-	  print "--> $command\n";
-	  system $command;
+	  $command .= " $enc_file"
   }
+  $command .= (length($user) > 1 ? " $user@" : " ") . "$host:";
+  print "--> $command\n";
+  system $command;
 }
 
 close $sync_hosts;
