@@ -7,6 +7,13 @@ people than I.
 
 I like these:
 
+* BeamU - https://www.kickstarter.com/projects/beamu/beamu-security-and-convenience-at-your-fingertips/description
+Probably by the time you read this, it's too late to back it, but
+they did pretty well (~$90,000 pledged on $5,000 asked), they do
+most of the security things I want here in an embedded device, and
+they incorporate biometrics in place of my "type your PGP password".
+They don't do data protection quite as fluidly as I do, but that's
+easy to automate. Go give them your money.
 * 1Password - https://1password.com/ - plays nice across OSes and
 on various phones. It's first in this list because after playing
 with a few, I thought it was the one that would get my parents to
