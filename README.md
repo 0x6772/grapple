@@ -14,6 +14,12 @@ most of the security things I want here in an embedded device, and
 they incorporate biometrics in place of my "type your PGP password".
 They don't do data protection quite as fluidly as I do, but that's
 easy to automate. Go give them your money.
+* pass - https://www.passwordstore.org/
+Appears to already have done roughly what I'm trying to do here,
+with some features I hadn't considered. I'm probably still going to
+finish grapple (I've already ~500 identities stored in my own
+format), and I haven't audited pass's code yet, but it sounds pretty
+great.
 * 1Password - https://1password.com/ - plays nice across OSes and
 on various phones. It's first in this list because after playing
 with a few, I thought it was the one that would get my parents to
