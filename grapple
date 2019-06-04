@@ -118,7 +118,6 @@ if ($usage)
   # XXX
 }
 
-
 my $changes_valid = 0;
 my $active_repo = '';
 
@@ -186,6 +185,9 @@ switch ($action)
       # password requirements|password recovery answers
       #
       # XXX also store 2fa backups? Probably in a separate file
+      # XXX for passreqs playing with stuff like "2+ symbols[^&*],
+      # but then we'll need to plausibly handle |, [, and ] in
+      # there...
       my ($username, $site, $password, $pin, $autochange,
         $changeurl, $pwreqs, $recovery_answers)
           = split(/$separator/, $line);
