@@ -1,7 +1,6 @@
 #!/usr/bin/perl -w
 
-
-# Copyright (c) 2019 Alan Gabriel Rosenkoetter
+# Copyright (c) 2021 Alan Gabriel Rosenkoetter
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -144,6 +143,8 @@ sub get_yes ($);
 my (@clear_files, @enc_files);
 opendir(my $cwd_handle, $cwd);
 
+# TODO also sync 2FA files
+
 print "All matched clear-text files:\n";
 foreach my $line (sort grep { /$file_check_regex/ } readdir $cwd_handle)
 {
@@ -229,6 +230,7 @@ print "Synchronizing:\n";
 
 open(my $sync_hosts, $sync_hosts_file);
 
+# XXX maybe add path as a fourth item? (to handle, eg, ~/Cubbit)
 while (<$sync_hosts>)
 {
   chomp ($_);
